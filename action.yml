@@ -1,0 +1,29 @@
+name: "Plane Prime Feature Contract Check"
+description: "Extract Plane stable backend FeatureFlag enum and compare it with the self-hosted Prime Monitor feature contract."
+inputs:
+  backend-image:
+    description: "Plane backend image to inspect."
+    required: false
+    default: "artifacts.plane.so/makeplane/backend-commercial:stable"
+  prime-monitor-feature-file:
+    description: "Prime Monitor feature contract file, JSON array/object or TypeScript prime-monitor.service.ts."
+    required: false
+    default: "contract/prime-monitor-feature-values.json"
+  out-dir:
+    description: "Directory for JSON report artifacts."
+    required: false
+    default: "out"
+runs:
+  using: "composite"
+  steps:
+    - name: Pull Plane backend image
+      shell: bash
+      run: docker pull "${{ inputs.backend-image }}"
+
+    - name: Compare feature flags
+      shell: bash
+      run: |
+        node "${{ github.action_path }}/scripts/check-feature-contract.mjs" \
+          --backend-image "${{ inputs.backend-image }}" \
+          --prime-monitor-feature-file "${{ inputs.prime-monitor-feature-file }}" \
+          --out-dir "${{ inputs.out-dir }}"

@@ -1,0 +1,11 @@
+{
+  "name": "plane-prime-feature-contract-action",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:stable": "node scripts/check-feature-contract.mjs --backend-image artifacts.plane.so/makeplane/backend-commercial:stable --prime-monitor-feature-file contract/prime-monitor-feature-values.json --out-dir out"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

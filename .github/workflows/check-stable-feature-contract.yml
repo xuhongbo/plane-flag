@@ -1,0 +1,43 @@
+name: Check Plane Stable Feature Contract
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check-stable:
+    name: Check stable FeatureFlag contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PLANE_ARTIFACTS_USERNAME: ${{ secrets.PLANE_ARTIFACTS_USERNAME }}
+      PLANE_ARTIFACTS_PASSWORD: ${{ secrets.PLANE_ARTIFACTS_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Login to Plane artifacts registry
+        if: ${{ env.PLANE_ARTIFACTS_USERNAME != '' && env.PLANE_ARTIFACTS_PASSWORD != '' }}
+        uses: docker/login-action@v3
+        with:
+          registry: artifacts.plane.so
+          username: ${{ env.PLANE_ARTIFACTS_USERNAME }}
+          password: ${{ env.PLANE_ARTIFACTS_PASSWORD }}
+
+      - name: Check stable feature contract
+        uses: ./
+        with:
+          backend-image: artifacts.plane.so/makeplane/backend-commercial:stable
+          prime-monitor-feature-file: contract/prime-monitor-feature-values.json
+          out-dir: out
+
+      - name: Upload feature contract report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plane-stable-feature-contract-report
+          path: out/*.json
