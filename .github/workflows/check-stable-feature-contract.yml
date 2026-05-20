@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
       PLANE_ARTIFACTS_USERNAME: ${{ secrets.PLANE_ARTIFACTS_USERNAME }}
       PLANE_ARTIFACTS_PASSWORD: ${{ secrets.PLANE_ARTIFACTS_PASSWORD }}
     steps:
