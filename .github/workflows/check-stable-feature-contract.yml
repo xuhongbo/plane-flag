@@ -2,6 +2,11 @@ name: Check Plane Stable Feature Contract
 
 on:
   workflow_dispatch:
+    inputs:
+      backend-image:
+        description: "Backend image to check. `stable` can point at a maintenance line (2026-10-12 it was v2.6.5), so pass the exact target version, e.g. artifacts.plane.so/makeplane/backend-commercial:v3.3.3"
+        required: false
+        default: "artifacts.plane.so/makeplane/backend-commercial:stable"
 
 jobs:
   check-stable:
@@ -32,7 +37,7 @@ jobs:
       - name: Check stable feature contract
         uses: ./
         with:
-          backend-image: artifacts.plane.so/makeplane/backend-commercial:stable
+          backend-image: ${{ inputs.backend-image || 'artifacts.plane.so/makeplane/backend-commercial:stable' }}
           prime-monitor-feature-file: contract/prime-monitor-feature-values.json
           out-dir: out
 
